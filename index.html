@@ -1,0 +1,230 @@
+<html>
+    <style>
+        p {
+            font-size: 2rem;
+        }
+
+        input {
+            margin: 0.4rem;
+        }
+
+        #Quiz {
+            visibility: hidden;
+            display: none;
+        }
+
+        #End {
+            visibility: hidden;
+            display: none;
+        }
+    </style>
+    <div id="Start">
+        <p1>Number Of Questions:</p1>
+        <input type="number" name="" id="NUMBEROFQ" value="5" min="1" max="40">
+        <button onClick="Start();" id="NQuestion">Start Quiz</button>
+    </div>
+    <div id="Quiz">
+        <div>
+            <p id="QNum"></p>
+            
+            <p id="Question"></p>
+        </div>
+        <div id="RADIOS">
+            <div>
+                <input type="radio" name="Input" id="Input1" onclick="Selected(1)"/>
+                <label for="Input1" id="First"></label>
+            </div>
+            <div>
+                <input type="radio" name="Input" id="Input2" onclick="Selected(2)"/>
+                <label for="Input2" id="Second"></label>
+            </div>
+            <div>
+                <input type="radio" name="Input" id="Input3" onclick="Selected(3)"/>
+                <label for="Input3" id="Third"></label>
+            </div>
+            <div>
+                <input type="radio" name="Input" id="Input4" onclick="Selected(4)"/>
+                <label for="Input4" id="Fourth"></label>
+            </div>
+        </div>
+        <button onClick="Submit();" id="NQuestion">Next Question</button>  <!--fd;lksjkj;ldafs;lkjfdslkaj;fda;lksjd;lkfsaj     Write();-->
+    </div>
+    <div id="End">
+        <div>
+            <p id="CORRECT"></p>
+            <p id="LISTWRONG"><br><br><br>Wrong Answers: <br><br><br><br><br><br></p>
+        </div>
+    </div>
+
+    <script>
+        var QuestionNumber = 1;
+        var NumOfQs = 5;
+
+        var GotWrong = [];
+        var Correct = 0;
+
+
+        var TempAns = "";
+        var Temp1 = "";
+        var Temp2 = "";
+        var Temp3 = "";
+        var Temp4 = "";
+        var TempSel = "";
+        var TempQ = "";
+
+        var Questions = [
+            ["Pat has just taken over the programming maintenance of a software produce. <br><br> Which documentation would be used to view the details of the variables in the program?", "Data Dictionary", "Logbook", "System Flowchart", "User Manual", "Data Dictionary"],
+            ["Which of the following pseudocode keywords is associated with multiway selection?", "CASEWHERE", "IF", "REPEAT", "WHILE", "CASEWHERE"],
+            ["A user is asked to enter the state in which they live, for example NSW, VIC, QLD. <br><br> Which screen element ensures that the entered value is valid?", "Text box", "Scroll bar", "Check box", "Drop down list", "Drop down list"],
+            ["The day before a school's swimming carnival, the sports teacher used spreadsheet software to develop an application enabling her to store and process the results during the carnival. <br><br> Which development approach did she use?", "Agile", "End User", "Prototype", "Structured", "End User"],
+            ["Which of the following requires inclusivity to be considered when designing interfaces for a proposed system?", "Incomplete testing", "A culturally diverse user base", "The use of images created by others", "The storage of sensitive customer data", "A culturally diverse user base"],
+            ["What is the main benefit of collaboration between developers?", "Removal of copyright issues", "Training of more developers", "Simplification of code maintenance", "Production of a better-quality product", "Production of a better-quality product"],
+            ["A large amount of data is to be accessed by different systems. The data is to be accessed randomly <br><br> What is the most effective way to store this data?", "A relative file", "A sequential file", "An array of records", "A two-dimensional array", "A relative file"],
+            ["A programmer needs to find out how to code a particular function in a specific programming language. <br><br> Which type of documentation should they refer to?", "Logbook", "User manual", "Data dictionary", "Railroad diagram", "Railroad diagram"],
+            ["Why would a developer choose to define a variable as global?", "It results in code that executes more quickly.", "It can be accessed and changed by all modules.", "It allows the code to run on multiple platforms.", "It can have different values in different modules.", "It can be accessed and changed by all modules."],
+            ["The prototyping process in the early stages of developing a solution was more timeconsuming and expensive than anticipated. <br><br> Why could this have occurred?", "There were logic errors in the initial algorithms.", "The communication between the developer and the client was poor.", "The modules to be incorporated in the solution were not readily available.", "The developer selected an inappropriate programming language to implement the solution.", "The communication between the developer and the client was poor."],
+            ["The list 7 9 2 4 1 is being sorted. <br><br> After the first pass the list becomes 7 2 4 1 9. <br><br> Which of the following shows the result of the next pass?", "1 2 4 7 9", "2 4 1 7 9", "2 7 4 1 9", "7 2 1 4 9", "2 4 1 7 9"],
+            ["At which stage of the software development cycle are the needs of the client first identified?", "Implementation", "Testing and evaluating", "Planning and designing", "Defining and understanding", "Defining and understanding"],
+            ["A company wants to survey people to find out their top five sources of news. A person can choose up to five options from a list. <br><br> Which of the following should be used in the survey?", "Scroll bars", "Check boxes", "Radio buttons", "Drop-down lists", "Check boxes"],
+            ["Which of the following describes a Creative Commons licence?", "It allows distribution of a limited version of the software product.", "It makes software available for use with no intellectual property rights.", "It specifies the maximum legal number of simultaneous users of the software.", "It allows an author to specify how others can share, use and build upon their work", "It specifies the maximum legal number of simultaneous users of the software."],
+            ["Which of the following is an essential feature of event-driven software?", "It is coded using a low-level language", "It has a graphic user interface with buttons.", "The programmer determines the order of execution.", "Inputs are processed to determine what happens next.", "Inputs are processed to determine what happens next."],
+            ["What is the purpose of a sentinel value in a sequential file?", "It marks the end of data in the file.", "It identifies a specific item in the file.", "It prevents unauthorised access to the file.", "It indicates the number of items in the file.", "It marks the end of data in the file."],
+            ["In a program, a sequence of statements must be executed at least once. <br><br> Which control structure will ensure that this occurs?", "Binary selection", "Pre-test repetition", "Post-test repetition", "Multiway selection", "Post-test repetition"],
+            ["In a project meeting, team members presented their code for others to review and identify errors. Which error detection method was being applied?", "Deskchecking", "Program trace", "Single line stepping", "Structured walkthrough", "Structured walkthrough"],
+            ["Software developers have a responsibility to ensure that software products", "are free from viruses.", "use a copyright symbol.", "use appropriate packaging.", "are compatible on most game consoles.", "are free from viruses."],
+            ["Which of the following is an example of a metalanguage?", "ASCII", "Data dictionary", "EBNF", "Pseudocode", "EBNF"],
+            ["What is the purpose of the program counter?", "To store the length of the object code", "To store the address of the next instruction", "To count how often a program has been installed", "To count the number of times a program loop is executed", "To store the address of the next instruction"],
+            ["A computer program is successfully compiled, but the object code produced is not yet executable. <br><br> Which of the following is the most likely reason for this?", "The object code still needs to be parsed.", "The syntax errors have not yet been fixed.", "The code elements have not yet been tokenised.", "The object code and library routines still need to be linked.", "The object code and library routines still need to be linked."],
+            ["What does the maintenance of software solutions most commonly involve?", "Making frequent backups", "Testing the software regularly", "Modifying code to meet changing requirements", "Supporting the users of the software after its release", "Modifying code to meet changing requirements"],
+            ["What should a software developer use to document each variable in a software solution?", "Data dictionary", "Data file", "Data flow diagram", "Structured data types", "Data dictionary"],
+            ["A company has been contracted to develop a large software system. The project team leader has produced documentation ready to pass to the software design team. <br><br> What is most likely to be included in this documentation?", "A prototype", "A schedule", "A set of test data", "A storyboard", "A schedule"],
+            ["The system described above is tested by running it for 24 hours under closely controlled conditions. <br><br> Which term best describes this process?", " Benchmarking", "Desk checking", "Logic testing", "Syntax checking", " Benchmarking"],
+            ["Which two types of documentation are most useful in understanding the logic of programming code?", "Storyboard and CASE tools", "CASE tools and pseudocode", "Internal documentation and storyboard", "Pseudocode and internal documentation", "Pseudocode and internal documentation"],
+            ["Which of the following would be best to use to show the planned sequence of events for a development process?", "Logbook", "Gantt chart", "Context diagram", "Program flowchart", "Gantt chart"],
+            ["Which of the following is most effective in preventing software piracy?", "Using a site licence ", "Using an encryption key", "Making a file 'Read-only'", "Providing source code instead of compiled code", "Using an encryption key"],
+            ["The Millennium Bug (also known as the year 2000 problem) resulted from the common practice of only storing the last two digits of a calendar year (eg 63 instead of 1963) in order to save memory. <br><br> Which of the following is TRUE of the Millennium Bug?", "It was a virus, as it affected software worldwide.", "It was a logic error, resulting in inappropriate calculations.", "It was caused by an inappropriate data structure, requiring a lot of software to be updated.", "It was malware, introduced by programmers who were later employed to fix the problem they had created.", "It was caused by an inappropriate data structure, requiring a lot of software to be updated."],
+            ["The quality of a piece of software is determined by a number of criteria. <br><br> At which stage of the software development cycle should these criteria be identified?", "Defining and understanding the problem", "Planning and designing the software solution", "Implementing the software solution", "Testing and evaluating the software solution", "Defining and understanding the problem"],
+            ["Which of the following is the most appropriate data type for storing telephone numbers?", "String", "Record", "Integer", "Floating point", "String"],
+            ["Which of the following is NOT a valid reason for maintaining software?", "Existing software also has to work on hand-held devices, such as tablets.", "Equal opportunity legislation demands greater inclusivity in user interfaces.", "There are legislative changes, such as the introduction of the GST, requiring added functionality.", "The increased speed of the national broadband network (NBN) allows users to download software more efficiently.", "The increased speed of the national broadband network (NBN) allows users to download software more efficiently."],
+            ["Which type of documentation provides the most detailed information about calculations used in programs?", "IPO diagram", "Structure chart", "Data dictionary", "Data flow diagram", "IPO diagram"],
+            ["Which type of coding error is test data used to detect?", "Compiler", "Lexical", "Logic", "Syntax", "Logic"],
+            ["Compiled software often needs to access DLLs. <br><br> What is the main reason for using DLLs?", "To allow the reuse of existing code", "To provide common document libraries", "To standardise the structure of compiled code", "To simplify the installation process for the user", "To allow the reuse of existing code"],
+            ["An algorithm is being designed to count the number of days between two dates in the calendar. <br><br> What would be the best data type to store this count?", "Date", "Integer", "Real", "String", "Integer"],
+            ["Why is it necessary to develop a set of criteria to evaluate a software project?", "To allow selection of an appropriate development process", "To ensure that the end users know what the software can do", "To check that the software is suitable for the intended purpose", "To enable the project managers to develop a time management schedule", "To check that the software is suitable for the intended purpose"],
+            ["Which of the following sets of software features would be most relevant to the end user?", "Data types and data structures", "Screen settings and algorithms", "Accessibility and interface design", "Operating system and programming language", "Accessibility and interface design"],
+            ["Which of the following is a possible reason for developers to use CASE tools?", "To automate data entry processes", "To install packages on remote systems", "To link external modules with internal modules", "To automate some of the tasks when creating software", "To automate some of the tasks when creating software"],
+        ];
+
+        function shuffle(array) {
+            let currentIndex = array.length,  randomIndex;
+            while (currentIndex > 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+
+            return array;
+        }
+
+        function Question() {
+            Temp1 = "";
+            Temp2 = "";
+            Temp3 = "";
+            Temp4 = "";
+            TempAns = "";
+            TempQ = "";
+            document.getElementById("QNum").innerHTML = "Question Number: " + QuestionNumber + " Out Of " + NumOfQs;
+            var element = document.getElementsByName("Input");
+            for(var i=0;i<element.length;i++) {
+                element[i].checked = false;
+            }
+            var Rand = Math.floor(Math.random() * Questions.length);
+            var Rand2 = Math.floor((Math.random() * 4) + 1);
+            document.getElementById("Question").innerHTML = Questions[Rand][0];
+            var Shuffled = shuffle((Questions[Rand]).slice(1, -1));
+            document.getElementById("First").innerHTML = Shuffled[0];
+            document.getElementById("Second").innerHTML = Shuffled[1];
+            document.getElementById("Third").innerHTML = Shuffled[2];
+            document.getElementById("Fourth").innerHTML = Shuffled[3];
+            Temp1 = Shuffled[0];
+            Temp2 = Shuffled[1];
+            Temp3 = Shuffled[2];
+            Temp4 = Shuffled[3];
+            TempAns = Questions[Rand][5];
+            TempQ = Questions[Rand][0];
+            Questions.splice(Rand, 1);
+            QuestionNumber ++;
+        }
+
+        function End() {
+            document.getElementById("Quiz").style.visibility = "hidden";
+            document.getElementById("Quiz").style.display = "none";
+            document.getElementById("CORRECT").innerHTML = "You got " + Correct + "/" + NumOfQs;
+            for (i=0; i<GotWrong.length; i++) {
+                document.getElementById("LISTWRONG").innerHTML = document.getElementById("LISTWRONG").innerHTML + "<b>" + GotWrong[i][0] + "</b><br><br> Answer Is: " + GotWrong[i][1] + "<br><br> You Selected: " + GotWrong[i][2] + "<br><br> <br><br>";
+            }
+        }
+
+        function Submit() {
+            switch (TempSel) {
+                case 1:
+                    if (Temp1 == TempAns) {
+                        Correct ++;
+                    }   else {
+                        GotWrong.push([TempQ, TempAns, Temp1]);
+                    }
+                    break;
+                case 2:
+                    if (Temp2 == TempAns) {
+                        Correct ++;
+                    }   else {
+                        GotWrong.push([TempQ, TempAns, Temp2]);
+                    }
+                    break;
+                case 3:
+                    if (Temp3 == TempAns) {
+                        Correct ++;
+                    }   else {
+                        GotWrong.push([TempQ, TempAns, Temp3]);
+                    }
+                    break;
+                case 4:
+                    if (Temp4 == TempAns) {
+                        Correct ++;
+                    }   else {
+                        GotWrong.push([TempQ, TempAns, Temp4]);
+                    }
+                    break;
+            }
+            Write();
+        }
+
+        function Selected(x) {
+            TempSel = x;
+        }
+
+        function Start() {
+            NumOfQs = document.getElementById("NUMBEROFQ").value;
+            Write();
+        }
+
+
+        function Write() {
+            document.getElementById("Start").style.visibility = "hidden";
+            document.getElementById("Start").style.display = "none";
+            
+            if (QuestionNumber > NumOfQs) {
+                document.getElementById("End").style.visibility = "visible";
+                document.getElementById("End").style.display = "block";
+                End();
+            } else {
+                document.getElementById("Quiz").style.visibility = "visible";
+                document.getElementById("Quiz").style.display = "block";
+                Question();
+            }
+        }
+
+
+    </script>
+    
+</html>
